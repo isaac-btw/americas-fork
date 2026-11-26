@@ -51,6 +51,10 @@ const RIGHT_SHOULDER: u32 = 0x800;
 const LEFT_STICK: u32 = 0x1000;
 const RIGHT_STICK: u32 = 0x2000;
 
+#[cfg(windows)]
+#[path = "mnk.rs"]
+pub(super) mod mnk;
+
 /// Devices: host pad slots, the keyboard's stand-in pad, the keyboard.
 const PADS: usize = 4;
 const FALLBACK: usize = PADS;
@@ -116,6 +120,10 @@ trait Source: Send {
 }
 
 fn fallback(keys: &[KeyState]) -> PadState {
+    #[cfg(windows)]
+    if let Some(state) = mnk::sample() {
+        return state;
+    }
     let on = |vk: u8| {
         if keys.iter().any(|k| k.virtual_key == vk) {
             1.0
@@ -1181,6 +1189,9 @@ mod host {
 
     impl Source for Host {
         fn pad(&mut self, slot: usize) -> Option<PadState> {
+            if super::mnk::enabled() {
+                return None;
+            }
             if self.empty_until[slot].is_some_and(|until| Instant::now() < until) {
                 return None;
             }
