@@ -103,6 +103,7 @@ mod texback;
 
 #[cfg(windows)]
 pub use host::on_failure;
+pub use host::log_defrag_counters;
 
 /// Whether `switch` is on now, if it is one of those `VICTORY_AB` turns on and
 /// off while the title runs (`ab`).
@@ -126,6 +127,7 @@ pub use inplace::{title_memory_freeing, title_memory_section, title_memory_secti
 #[cfg(windows)]
 pub use watch::{
     kernel_writing, title_memory_allocated, title_memory_freed, title_memory_reading, title_memory_remapped,
+    title_placeholder_reserved,
     title_memory_remapping, title_memory_splitting, title_memory_unmapping, title_memory_written,
     writing as kernel_will_write,
 };
